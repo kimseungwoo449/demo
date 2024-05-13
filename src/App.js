@@ -1,24 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
+// JSX
+// ㄴ JavaScript XML
 
-function App() {
+import BookList from "./components/BookList";
+import MyComponent from "./components/MyComponent";
+
+function App() {  // 함수형으로 정의된 리액트 컴포넌트
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    // <MyComponent message={"This is my first React App.2"} />
+    <BookList/>
   );
 }
 
