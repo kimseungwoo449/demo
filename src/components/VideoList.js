@@ -8,11 +8,11 @@ import { FaYoutube } from "react-icons/fa6";
 import { FaMoon } from "react-icons/fa";
 import { FaSun } from "react-icons/fa";
 
-const BookList = () => {
+const VideoList = () => {
     // const [count,setCount] = useState(1);
 
     // useState는 화면 랜더링에 반영됨
-    const [bookList, setBookList] = useState([]);
+    const [videoList, setVideoList] = useState([]);
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('강아지똥');
     // useRef 는 화면 랜더링 반영되지 않는 참조값
@@ -23,7 +23,8 @@ const BookList = () => {
     const color = useColorModeValue('red.500', 'red.200');
     const buttonScheme = useColorModeValue("blackAlpha","whiteAlpha");
 
-    const fetchBooks = async () => {
+
+    const fetchVideos = async () => {
         const response = await fetch(
             `https://dapi.kakao.com/v2/search/vclip?query=${search}&page=${page}`,
             {
@@ -44,7 +45,7 @@ const BookList = () => {
         console.log(pageCount);
 
 
-        setBookList(data.documents);
+        setVideoList(data.documents);
     };
 
     const changeSearch = e => {
@@ -61,7 +62,7 @@ const BookList = () => {
     };
 
     useEffect(() => {
-        fetchBooks();
+        fetchVideos();
     }, [search, page])
 
     return (
@@ -88,7 +89,7 @@ const BookList = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {bookList.map((book, index) => (
+                            {videoList.map((book, index) => (
                                 <>
                                     <Tr>
                                         <Td>{(page - 1) * 10 + index + 1}</Td>
@@ -121,4 +122,4 @@ const BookList = () => {
     );
 };
 
-export default BookList;
+export default VideoList;
