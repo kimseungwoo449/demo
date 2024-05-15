@@ -4,36 +4,33 @@ import {
     useColorMode,
     useColorModeValue,
     Center,
-    Img,
-    Text,
-    Image,
-    Container
+    Image
 } from '@chakra-ui/react';
-import React, { useState, useEffect, useRef } from 'react';
+
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Input } from '@chakra-ui/react'
 import { FaYoutube } from "react-icons/fa6";
 import { FaMoon } from "react-icons/fa";
 import { FaSun } from "react-icons/fa";
 import { Form, redirect, useNavigate } from 'react-router-dom';
 
-const VideoList = () => {
-    // const [count,setCount] = useState(1);
-    // useRef 는 화면 랜더링 반영되지 않는 참조값
-    const pageCount = useRef(1);
-    // useState는 화면 랜더링에 반영됨
-    const [videoList, setVideoList] = useState([]);
-    const [page, setPage] = useState(1);
-    const [search, setSearch] = useState("강아지똥");
-
+const SearchVideo = () => {
+    const [params] = useSearchParams();
     // Chakra UI 에서 제공하는 훅
     const { colorMode, toggleColorMode } = useColorMode();
     const color = useColorModeValue('red.500', 'red.200');
     const buttonScheme = useColorModeValue("blackAlpha", "whiteAlpha");
 
-    const navigate = useNavigate();
+    const paramsObj = Object.fromEntries([...params]);
+    const query = paramsObj.query;
+    const pageCount = useRef(1);
+
+    const [page, setPage] = useState(1);
+    const [videoList, setVideoList] = useState([]);
     const fetchVideos = async () => {
         const response = await fetch(
-            `https://dapi.kakao.com/v2/search/vclip?query=${search}&page=${page}`,
+            `https://dapi.kakao.com/v2/search/vclip?query=${query}&page=${page}`,
             {
                 method: "GET",
                 headers: {
@@ -55,32 +52,16 @@ const VideoList = () => {
         setVideoList(data.documents);
     };
 
-    const changeSearch = e => {
-        if ((e.type === "keydown" && e.keyCode == 13) || e.type === "click") {
-            const searchValue = document.getElementById('search-value').value;
-            console.log(searchValue);
-            // if (searchValue === null || searchValue === "") {
-            //     searchValue = "강아지똥";
-            // }
-            document.getElementById('search-value').value = '';
-            // setSearch(searchValue);
-        }
-        // if (e.target.value.length > 1) {
-        //     setSearch(e.target.value);
-        // }
-
-    };
-
     useEffect(() => {
         fetchVideos();
-    }, [search, page])
+    }, [page])
 
     return (
         <>
             <Center w={'100vw'}>
                 <Heading color={color}>
-                    <Icon as={FaYoutube} boxSize={"1.5em"} w={10} h={8} />
-                    추천 동영상 목록
+                    <Icon as={FaYoutube} boxSize={"1.5em"} />
+                    검색한 동영상 목록
                 </Heading>
             </Center>
             {
@@ -95,34 +76,36 @@ const VideoList = () => {
                 </HStack>
 
             </Form>
+            <TableContainer>
+                <Table size='sm' colorScheme="whiteAlpha" >
+                    <Thead>
+                        <Tr>
+                            <Th>No</Th>
+                            <Th>Tumbnail</Th>
+                            <Th>Contents</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {videoList.map((video, index) => (
+                            <>
+                                <Tr>
+                                    <Td>{(page - 1) * 10 + index + 1}</Td>
+                                    <Td><a href={video.url}><Image src={video.thumbnail} w={'300px'} h={'auto'}></Image></a></Td>
+                                    <Td flexDirection={'column'} ><div>Title : {video.title}</div><div>Chanel :  {video.author}</div><div>Play Time :  {video.play_time}초</div></Td>
+                                </Tr>
 
-            <HStack flexWrap={'wrap'}>
-                {videoList.map((video, index) => (
-                    <Container width={'17%'}>
-                        <a href={video.url}>
-                            <Center>
-                                <Img src={video.thumbnail} w={'200px'} h={'auto'}></Img>
-                            </Center>
-                            <Center>
-                                <Text>{video.title}</Text>
-                            </Center>
-                            <Center>
-                                <Text>{video.author}</Text>
-                            </Center>
-                            <Center>
-                                <Text>{video.play_time}초</Text>
-                            </Center>
-                        </a>
-                    </Container>
-                ))}
-            </HStack>
+                            </>
+                        ))}
+                    </Tbody>
+                </Table>
+            </TableContainer>
 
 
             <HStack>
                 <Center w={'100vw'} mt={'10px'}>
                     {Array.from({ length: pageCount.current }, (_, index) => (
                         <>
-                            <Button mr={'5px'} colorScheme={
+                            <Button mr={'10px'} colorScheme={
                                 page === index + 1 ?
                                     "red" : buttonScheme
                             } onClick={e => { setPage(index + 1) }}>
@@ -138,4 +121,4 @@ const VideoList = () => {
     );
 };
 
-export default VideoList;
+export default SearchVideo;

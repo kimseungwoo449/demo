@@ -1,7 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import Root from "./routes/Root";
 import VideoList from "./components/VideoList";
-import Child from "./routes/Child";
+import BookList from "./components/BookList";
+import SearchBook from "./components/SearchBook";
+import SearchVideo from "./components/SearchVideo";
 
 // 라우터 설계
 /*
@@ -27,36 +29,42 @@ const router = createBrowserRouter([
                 element:<>
                     <p>자식이다.</p>
                 </>
+            },
+        ],
+        errorElement: <>
+            <p>Opps!!!</p>
+        </>
+    },
+    {
+        path: "/video",
+        element: <Root />,
+        children: [
+            {
+                path:"/video/list",
+                element:<VideoList />
             }
             ,
             {
-                path:"/video",
-                element:<Child/>,
-                children:[
-                    {
-                        path:"/video/list",
-                        element:<VideoList/>
-                    }
-                    ,
-                    {
-                        path:"/video/search",
-                        element:<VideoList/>
-                    }
-                ]
-            }
-            ,
-            {
-                path:"/book",
-                element:<Child/>,
-                children:[
-                    {
-                        path:"/book/search",
-                        element:<VideoList/>
-                    }
-                ]
+                path:"/video/search",
+                element:<SearchVideo />,
             }
         ]
     },
+    {
+        path: "/book",
+        element: <Root />,
+        children: [
+            {
+                path:"/book/list",
+                element:<BookList />
+            }
+            ,
+            {
+                path:"/book/search",
+                element:<SearchBook />,
+            }
+        ]
+    }
 ], {
     basename: "/demo"
 })
